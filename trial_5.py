@@ -1,5 +1,7 @@
 import PIL.ImageGrab
 import math
+# PIL.ImageGrab only runs in macOS and Windows
+# Running in Linux will throw an error
 
 def color(x,y):
 	rgb = PIL.ImageGrab.grab().load()[x,y] #imagegrab is a class and grab is a function in that class
@@ -14,7 +16,8 @@ no=[(205,193,180),(238,228,218),(237,224,200),(242,177,121)
 ,(237,194,46)]
 
 
-
+# matrix cells corresponds to each cell of the board
+# matrix is initialized based on the color of the cell
 matrix=[[-1,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1]]
 def mat():
 
@@ -26,7 +29,7 @@ def mat():
 		if color(966,307)==no[m]:
 			matrix[0][2]=int(math.pow(2,m))
 		if color(1100,307)==no[m]:
-			matrix[0][3]=int(math.pow(2,m))	
+			matrix[0][3]=int(math.pow(2,m))
 		if color(691,443)==no[m]:
 			matrix[1][0]=int(math.pow(2,m))
 		if color(827,443)==no[m]:
@@ -50,8 +53,9 @@ def mat():
 		if color(964,712)==no[m]:
 			matrix[3][2]=int(math.pow(2,m))
 		if color(1100,712)==no[m]:
-			matrix[3][3]=int(math.pow(2,m))										
+			matrix[3][3]=int(math.pow(2,m))
 
+# each new matrix represents the future move
 mat()
 matup=[[-1,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1]]
 matdown=[[-1,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1],[-1,-1,-1,-1]]
@@ -66,19 +70,19 @@ def matrdown():
 	for i in range (0,4):
 		for j in range (0,4):
 			matdown[i][j]=matrix[i][j]
-def matrright():			
+def matrright():
 	for i in range (0,4):
 		for j in range (0,4):
 			matright[i][j]=matrix[i][j]
-def matrleft():			
+def matrleft():
 	for i in range (0,4):
 		for j in range (0,4):
 			matleft[i][j]=matrix[i][j]
 
 
-
+# returns board state if left move is applied
 def left():
-	
+
 	for i in range (0,4):
 		for j in range (1,4):
 			if(matleft[i][j]!=1):
@@ -95,9 +99,12 @@ def left():
 					matleft[i][k+1]=matleft[i][j]
 					if(k+1!=j):
 						matleft[i][j]=1
-	return matleft				
+	return matleft
+
+
+# returns board state if right move is applied
 def right():
-	
+
 	for i in range (0,4):
 		for j in range (2,-1,-1):
 			if(matright[i][j]!=1):
@@ -113,9 +120,11 @@ def right():
 				else:
 					matright[i][k-1]=matright[i][j]
 					if(k-1!=j):
-						matright[i][j]=1  				
+						matright[i][j]=1
+
+# returns board state if up move is applied
 def up():
-	
+
 	for i in range (0,4):
 		for j in range (1,4):
 			if(matup[j][i]!=1):
@@ -132,8 +141,10 @@ def up():
 					matup[k+1][i]=matup[j][i]
 					if(k+1!=j):
 						matup[j][i]=1
+
+# returns board state if down move is applied
 def down():
-	
+
 	for i in range (0,4):
 		for j in range (2,-1,-1):
 			if(matdown[j][i]!=1):
@@ -248,13 +259,13 @@ def checkempty(m):
 		for j in range (0,4):
 			if m[i][j]==1:
 				count=count+1
-	return count	
+	return count
 def total(m):
 	total=0
 	for i in range(0,4):
 		for j in range (0,4):
 			total=total+m[i][j]
-	return total		
+	return total
 def checkdes(m):
 	count=0
 	for i in range(0,3):
@@ -272,7 +283,7 @@ def checkcolumn(m):
 	for i in range(0,3):
 		if m[i][0]!=1:
 			count=count+1
-	return count			
+	return count
 
 
 def heuristic():
@@ -286,14 +297,14 @@ def heuristic():
 		if(g==4):
 			return "VK_RIGHT"
 		elif(h==4):
-			return "VK_DOWN"	
+			return "VK_DOWN"
 		elif(g<h):
 			return "down"
 		elif(g>h):
 			return "right"
 
 
-	
+
 
 	else:   #moves available
 		a=checkempty(matleft)
@@ -315,7 +326,7 @@ def heuristic():
 			return "VK_LEFT"
 		elif(f>e):
 			return "VK_UP"
-			
+
 		'''if(e==f):
 			if(matup==matrix):
 				return "VK_LEFT"
@@ -324,15 +335,15 @@ def heuristic():
 			if(matleft[0][3]==1 or matup[0][3]==1):
 				return "VK_UP"
 			else:
-				return "VK_UP"	'''	
+				return "VK_UP"	'''
 		if(matup==matrix):
 			return "VK_LEFT"
 		else:
-			return "VK_UP"	    
+			return "VK_UP"
 
 def AltTab():
 	PressKey(VK_UP)
-    
+
 	ReleaseKey(VK_UP)
 	PressKey(VK_LEFT)
 	ReleaseKey(VK_LEFT)
@@ -364,14 +375,14 @@ def AltTab():
 			if(matrix[0][0]==1):
 				PressKey(VK_LEFT)
 				ReleaseKey(VK_LEFT)
-					
+
 		elif a=="down":
 			PressKey(VK_DOWN)
 			ReleaseKey(VK_DOWN)
 			mat()
 			if(matrix[0][0]==1):
 				PressKey(VK_UP)
-				ReleaseKey(VK_UP)		
+				ReleaseKey(VK_UP)
 
 		elif a=="VK_UP":
 			PressKey(VK_UP)
@@ -384,16 +395,8 @@ def AltTab():
 		matrleft()
 		matrright()
 		matrup()
-      
-    
-        
+
+
+
 if __name__ == "__main__":
 	AltTab()
-
-
-		
-
-					
-				
-
-
